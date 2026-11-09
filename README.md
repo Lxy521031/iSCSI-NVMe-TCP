@@ -1,5 +1,7 @@
 # macOS iSCSI/NVMe-TCP Initiator
 
+**[简体中文分支说明](README.zh-CN.md)** · This fork adds Simplified Chinese. Local packages are unsigned build artifacts, not installable releases.
+
 [![version](https://img.shields.io/github/v/release/jherskovic/iSCSI?sort=semver&display_name=tag&label=version)](https://github.com/jherskovic/iSCSI/releases/latest)
 [![license](https://img.shields.io/github/license/jherskovic/iSCSI)](LICENSE)
 [![build](https://github.com/jherskovic/iSCSI/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jherskovic/iSCSI/actions/workflows/ci.yml)

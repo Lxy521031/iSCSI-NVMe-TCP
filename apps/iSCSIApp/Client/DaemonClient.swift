@@ -149,7 +149,7 @@ extension DaemonConnection {
                         lun: NSNumber(value: lun)) { handle, error in
                 if let error { finish(.failure(error)) }
                 else if let handle { finish(.success(handle)) }
-                else { finish(.failure(Unreachable(reason: "the daemon returned no session"))) }
+                else { finish(.failure(Unreachable(reason: String(localized: "the daemon returned no session")))) }
             }
         }
     }
@@ -207,16 +207,14 @@ extension DaemonConnection {
             body(proxy) { data, error in
                 if let error { finish(.failure(error)) }
                 else if let data { finish(.success(data)) }
-                else { finish(.failure(Unreachable(reason: "the daemon replied with nothing"))) }
+                else { finish(.failure(Unreachable(reason: String(localized: "the daemon replied with nothing")))) }
             }
         }
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             throw Unreachable(reason:
-                "the daemon sent a reply this version cannot read (\(error)). "
-                + "This usually means the app and the background service are "
-                + "different versions; the Setup screen can reinstall it.")
+                String(localized: "the daemon sent a reply this version cannot read (\(error)). This usually means the app and the background service are different versions; the Setup screen can reinstall it."))
         }
     }
 }

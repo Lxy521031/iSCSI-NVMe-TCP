@@ -12,6 +12,8 @@ options:
   deploymentTarget:
     macOS: "26.0"
   createIntermediateGroups: true
+  knownRegions: [en, zh-Hans]
+  developmentLanguage: en
 
 packages:
   iSCSI:
@@ -49,6 +51,7 @@ settings:
     # entitlement request to Apple — see docs/entitlements.md.
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "6.0"
+    SWIFT_EMIT_LOC_STRINGS: YES
     MARKETING_VERSION: "0.9.1"
     CURRENT_PROJECT_VERSION: "54"
 

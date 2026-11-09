@@ -52,6 +52,7 @@ final class UpdateController: NSObject, ObservableObject {
 
     override init() {
         super.init()
+        guard Bundle.main.object(forInfoDictionaryKey: "LocalizedForkManualUpdates") as? Bool != true else { return }
         controller = SPUStandardUpdaterController(
             startingUpdater: false, updaterDelegate: self, userDriverDelegate: nil)
         // KVO-observable, bridged once so the menu item binds a plain Bool.
@@ -61,13 +62,17 @@ final class UpdateController: NSObject, ObservableObject {
 
     /// Starts Sparkle, including its scheduled checks. Later calls do nothing.
     func start() {
-        guard !didStart else { return }
+        guard !didStart, controller != nil else { return }
         didStart = true
         controller.startUpdater()
     }
 
     func checkForUpdates() {
-        controller.checkForUpdates(nil)
+        if controller == nil {
+            NSWorkspace.shared.open(URL(string: "https://github.com/Lxy521031/iSCSI-NVMe-TCP/releases")!)
+        } else {
+            controller.checkForUpdates(nil)
+        }
     }
 
     /// Called after a detach, in case an update has been waiting for one.
@@ -109,7 +114,7 @@ private extension UpdateController {
     func explainPostponement(version: String) {
         let names = attachedVolumeNames()
         let subject = names.isEmpty
-            ? "a volume that is attached"
+            ? String(localized: "a volume that is attached")
             : ListFormatter.localizedString(byJoining: names.map { "“\($0)”" })
 
         NSApp.activate()
@@ -117,8 +122,8 @@ private extension UpdateController {
         let alert = NSAlert()
         // Informational, not a warning: refusing is the app working correctly.
         alert.alertStyle = .informational
-        alert.messageText = "Version \(version) will install after you detach"
-        alert.informativeText = """
+        alert.messageText = String(localized: "Version \(version) will install after you detach")
+        alert.informativeText = String(localized: """
             Installing now would replace the filesystem extension that \
             \(subject) is using, and anything writing to it at that moment \
             would lose the process answering its reads and writes.
@@ -126,9 +131,9 @@ private extension UpdateController {
             The update is downloaded and ready. It will install itself and \
             relaunch the app as soon as the last volume is detached, or the \
             next time you launch.
-            """
-        alert.addButton(withTitle: "Detach and Install")
-        alert.addButton(withTitle: "Later")
+            """)
+        alert.addButton(withTitle: String(localized: "Detach and Install"))
+        alert.addButton(withTitle: String(localized: "Later"))
 
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         Task { @MainActor [weak self] in
@@ -151,19 +156,18 @@ struct CheckForUpdatesButton: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Button { updates.checkForUpdates() } label: {
-                Label("Check for Updates…", systemImage: "arrow.down.circle")
+                Label(String(localized: "Check for Updates…"), systemImage: "arrow.down.circle")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
                     .padding(.horizontal, 12).padding(.vertical, 5)
             }
             .buttonStyle(.plain)
-            .disabled(!updates.canCheckForUpdates)
+            .disabled(!updates.canCheckForUpdates && Bundle.main.object(forInfoDictionaryKey: "LocalizedForkManualUpdates") as? Bool != true)
 
             if let version = updates.pendingUpdateVersion {
                 // Standing reminder after the dialog; names the relaunch
                 // because that is the startling part.
-                Text("Version \(version) is ready. It will install and relaunch "
-                     + "once every volume is detached.")
+                Text(String(localized: "Version \(version) is ready. It will install and relaunch once every volume is detached."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -179,7 +183,7 @@ struct AppMenuUpdatesItem: View {
     @ObservedObject var updates: UpdateController
 
     var body: some View {
-        Button("Check for Updates…") { updates.checkForUpdates() }
-            .disabled(!updates.canCheckForUpdates)
+        Button(String(localized: "Check for Updates…")) { updates.checkForUpdates() }
+            .disabled(!updates.canCheckForUpdates && Bundle.main.object(forInfoDictionaryKey: "LocalizedForkManualUpdates") as? Bool != true)
     }
 }

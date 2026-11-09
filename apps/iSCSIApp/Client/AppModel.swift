@@ -217,7 +217,7 @@ final class AppModel: ObservableObject {
             }
             return true
         } catch {
-            if reportingErrors { present(error, doing: "Reading your targets") }
+            if reportingErrors { present(error, doing: String(localized: "Reading your targets")) }
             return false
         }
     }
@@ -238,11 +238,9 @@ final class AppModel: ObservableObject {
            let row = rows.first(where: { $0.id == target.id }),
            row.attachment != nil || row.session != nil {
             lastError = PresentableError(
-                title: "“\(old.displayName)” is in use",
-                message: "Its address, port, name or \(old.isNVMe ? "namespace" : "LUN") "
-                       + "can't change while it is attached: the app finds the mounted "
-                       + "volume by them.",
-                suggestion: "Detach it, then edit it. Nothing was saved.")
+                title: String(localized: "“\(old.displayName)” is in use"),
+                message: String(localized: "Its address, port, name or \(old.isNVMe ? String(localized: "namespace") : "LUN") can't change while it is attached: the app finds the mounted volume by them."),
+                suggestion: String(localized: "Detach it, then edit it. Nothing was saved."))
             return
         }
         do {
@@ -270,7 +268,7 @@ final class AppModel: ObservableObject {
             targets = try await DaemonConnection.listTargets()
             await syncLoginItem(savedIsMarked: stored.autoAttach)
         } catch {
-            present(error, doing: "Saving “\(target.displayName)”")
+            present(error, doing: String(localized: "Saving “\(target.displayName)”"))
         }
     }
 
@@ -294,7 +292,7 @@ final class AppModel: ObservableObject {
             // Turned off in System Settings: the banner on Targets already
             // says so, and an alert on every save would only repeat it.
             if !(action == .register && status == .requiresApproval) {
-                present(error, doing: "Changing the login item")
+                present(error, doing: String(localized: "Changing the login item"))
             }
         }
         loginItemStatus = LoginItem.status
@@ -306,7 +304,7 @@ final class AppModel: ObservableObject {
         do {
             try LoginItem.register()
         } catch {
-            present(error, doing: "Turning on the login item")
+            present(error, doing: String(localized: "Turning on the login item"))
         }
         loginItemStatus = LoginItem.status
     }
@@ -324,7 +322,7 @@ final class AppModel: ObservableObject {
             do {
                 try await attachments.detach(tag: attachment.tag)
             } catch {
-                present(error, doing: "Removing “\(target.displayName)”")
+                present(error, doing: String(localized: "Removing “\(target.displayName)”"))
                 return
             }
         }
@@ -333,7 +331,7 @@ final class AppModel: ObservableObject {
             targets = try await DaemonConnection.listTargets()
             await syncLoginItem(savedIsMarked: nil)
         } catch {
-            present(error, doing: "Removing “\(target.displayName)”")
+            present(error, doing: String(localized: "Removing “\(target.displayName)”"))
         }
     }
 
@@ -364,14 +362,12 @@ final class AppModel: ObservableObject {
             // normal outcome, not a failure.
             if !attachment.isFullyAttached, let device = attachment.device {
                 lastError = PresentableError(
-                    title: "“\(target.displayName)” is connected but not formatted",
-                    message: "The LUN is attached as \(device) and has no filesystem "
-                           + "on it yet, which is normal for a new LUN.",
-                    suggestion: "Open Disk Utility, select it, and erase it as APFS "
-                              + "or ExFAT. It will mount by itself afterwards.")
+                    title: String(localized: "“\(target.displayName)” is connected but not formatted"),
+                    message: String(localized: "The LUN is attached as \(device) and has no filesystem on it yet, which is normal for a new LUN."),
+                    suggestion: String(localized: "Open Disk Utility, select it, and erase it as APFS or ExFAT. It will mount by itself afterwards."))
             }
         } catch {
-            present(error, doing: "Attaching “\(target.displayName)”")
+            present(error, doing: String(localized: "Attaching “\(target.displayName)”"))
         }
     }
 
@@ -426,7 +422,7 @@ final class AppModel: ObservableObject {
     static func orphanTitle(_ orphan: Attachment) -> String {
         if let volume = orphan.volumePaths.first { return URL(fileURLWithPath: volume).lastPathComponent }
         guard let unit = orphan.mountSource.flatMap(AutoAttachRun.mountedUnit) else { return orphan.tag }
-        return "\(unit.name) \(unit.isNVMe ? "namespace" : "LUN") \(unit.unit)"
+        return "\(unit.name) \(unit.isNVMe ? String(localized: "namespace") : "LUN") \(unit.unit)"
     }
 
     /// The detach itself, shared by targets and orphans.
@@ -450,7 +446,7 @@ final class AppModel: ObservableObject {
             // No installPendingUpdateIfReady() here: the sink in init() covers
             // this path and Finder ejects with one mechanism.
         } catch {
-            present(error, doing: "Detaching “\(name)”")
+            present(error, doing: String(localized: "Detaching “\(name)”"))
         }
     }
 
@@ -468,10 +464,11 @@ final class AppModel: ObservableObject {
 
     static func presentable(_ error: Error, title: String) -> PresentableError {
         let ns = error as NSError
+        let details = LocalizedStorageError.details(ns)
         return PresentableError(
             title: title,
-            message: ns.localizedDescription,
-            suggestion: ns.localizedRecoverySuggestion
+            message: details.message,
+            suggestion: details.suggestion
                 ?? (error as? LocalizedError)?.recoverySuggestion)
     }
 }
@@ -501,16 +498,16 @@ enum ForceEjectPrompt {
         NSApp.activate()
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "“\(volume)” is in use and was not ejected"
-        alert.informativeText = """
+        alert.messageText = String(localized: "“\(volume)” is in use and was not ejected")
+        alert.informativeText = String(localized: """
             \(detail)
 
             Force Eject takes the volume away from whatever is using it. \
             Anything those apps have not saved is lost, and a file being \
             written at that moment can be left incomplete.
-            """
-        alert.addButton(withTitle: "Cancel")
-        let force = alert.addButton(withTitle: "Force Eject")
+            """)
+        alert.addButton(withTitle: String(localized: "Cancel"))
+        let force = alert.addButton(withTitle: String(localized: "Force Eject"))
         force.hasDestructiveAction = true
         return alert.runModal() == .alertSecondButtonReturn
     }

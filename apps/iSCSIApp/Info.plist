@@ -2,72 +2,50 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- The menu bar title. The bundle is still "iSCSI Initiator.app": a file
-         name cannot hold a slash, and installs and updates go by that path. -->
-    <key>CFBundleName</key>
-    <string>iSCSI/NVMe/TCP Initiator</string>
-    <!-- The Dock and Finder show the file name unless this matches it and a
-         localized value exists, so this stays the file name and the name
-         people see is in en.lproj/InfoPlist.strings. -->
-    <key>CFBundleDisplayName</key>
-    <string>iSCSI Initiator</string>
-    <key>LSHasLocalizedDisplayName</key>
-    <true/>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>en</string>
-    <key>CFBundleIdentifier</key>
-    <string>me.herko.iSCSIInitiator</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(MARKETING_VERSION)</string>
-    <key>CFBundleVersion</key>
-    <string>$(CURRENT_PROJECT_VERSION)</string>
-    <!-- Sparkle. The feed lives in this repo and its enclosures point at
-         GitHub Release assets. -->
-    <!-- Must not contain a slash. Sparkle names its download directory after
-         this, and without it the name would be the display name above: every
-         update download would fail, and that build could never update itself
-         out of the fault. release.sh checks. -->
-    <key>SUBundleName</key>
-    <string>iSCSI Initiator</string>
-    <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/jherskovic/iSCSI/main/appcast.xml</string>
-    <!-- EdDSA public key. The private half lives in the login keychain of
-         whoever cuts releases; scripts/release.sh refuses to build if the two
-         do not exist. Replace with the output of Sparkle's generate_keys. -->
-    <key>SUPublicEDKey</key>
-    <string>uXyWZVcSiXV7mioZMJ/GJWQb2iroZFO6XsI/DM4xeYY=</string>
-    <!-- Checking in the background is fine. Installing without being asked is
-         not: replacing the bundle swaps the FSKit extension out from under a
-         mounted volume, which is data loss rather than an inconvenience. -->
-    <key>SUEnableAutomaticChecks</key>
-    <true/>
-    <key>SUAutomaticallyUpdate</key>
-    <false/>
-    <key>SUAllowsAutomaticUpdates</key>
-    <false/>
-    <key>LSMinimumSystemVersion</key>
-    <string>26.0</string>
-    <!-- Draws icon.png straight into the Dock tile while the app isn't
-         running, bypassing macOS 26's forced squircle backdrop. See
-         DockTilePlugin/Sources/DockTilePlugin.swift. -->
-    <key>NSDockTilePlugIn</key>
-    <string>iSCSI Initiator Dock.docktileplugin</string>
-    <!-- Opens the main window and nothing else, for a request made while the
-         app is in the background. See MainWindowURL in MenuBarLabel.swift. -->
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLName</key>
-            <string>me.herko.iSCSIInitiator.window</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>me.herko.iscsiinitiator</string>
-            </array>
-        </dict>
-    </array>
-    <key>NSHumanReadableCopyright</key>
-    <string>iSCSI/NVMe/TCP Initiator</string>
+	<key>CFBundleName</key>
+	<string>iSCSI/NVMe/TCP Initiator</string>
+	<key>CFBundleDisplayName</key>
+	<string>iSCSI Initiator</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleIdentifier</key>
+	<string>me.herko.iSCSIInitiator</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>SUBundleName</key>
+	<string>iSCSI Initiator</string>
+	<key>SUFeedURL</key>
+	<string>https://raw.githubusercontent.com/Lxy521031/iSCSI-NVMe-TCP/main/appcast.xml</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>NSDockTilePlugIn</key>
+	<string>iSCSI Initiator Dock.docktileplugin</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>me.herko.iSCSIInitiator.window</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>me.herko.iscsiinitiator</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSHumanReadableCopyright</key>
+	<string>iSCSI/NVMe/TCP Initiator</string>
+	<key>LocalizedForkManualUpdates</key>
+	<true/>
 </dict>
 </plist>
